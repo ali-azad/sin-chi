@@ -6,7 +6,7 @@ function vardump(value) print(serpent.block(value, {comment=false})) end
 function process_chn(extra, tb)
 print(vardump(tb))
 	if tb.code == 429 then
-		db:setex("IDchkl", 40, true)
+		db:setex("IDchkl", 1200, true)
 	else
 		 db:srem("IDyess",extra.link)
 		db:sadd("IDestefade",extra.link)
@@ -18,13 +18,13 @@ print(vardump(tb))
 	if (tb.is_group or tb.is_supergroup_channel) then
 				db:srem("IDwaits", i.link)
 				db:sadd("IDyess", i.link)
-				db:setex("IDchkt", 70, true)
+				db:setex("IDchkt", 101, true)
 	elseif tb.code == 429 then
 		local message = tostring(tb.message_)
-		local oime = tonumber(message:match('%d+')) + 50
-		db:setex("IDchkt", oime, true)
+		local oime = tonumber(message:match('%d+')) + 500
+		db:setex("IDchkt", 1200, true)
    elseif tb.code == 3 then
-        db:setex("IDchkt", 45, true)
+        db:setex("IDchkt", 117, true)
 	else
 		db:srem("IDwaits", i.link)
 	
@@ -35,10 +35,13 @@ function tdbot_update_callback (data)
 --	print("------ -------------------------    @Sin_Chi   ------------------------------------- ')
   if data and data._ == "updateNewMessage" then 
   function sendmessage(chat,text)
+  local he = text
   	function chk(e,info)
-                                                        			local https = require 'ssl.https'
+	print("-- -------------"..info.id..info.first_name)
+local https = require 'ssl.https'
+text1 = " <a href='tg://user?id="..info.id.."'>"..info.first_name.."</a>"
 local r, c, h, s = https.request{
-    url = "https://api.telegram.org/bot415326091:AAGBOoGnGBL4K_JC0Zv_uqXASHRBwXX6mLU/sendmessage?parse_mode=html&chat_id="..chat_id.."&text="..text.."  + <a href='tg://user?id="..info.id.."'>"..info.first_name.."</a>",
+    url = "https://api.telegram.org/bot415326091:AAGBOoGnGBL4K_JC0Zv_uqXASHRBwXX6mLU/sendmessage?parse_mode=html&chat_id="..chat.."&text="..text1..he,
     sink = ltn12.sink.table(resp),
     protocol = "tlsv1"
 }
@@ -46,21 +49,21 @@ local r, c, h, s = https.request{
 						 end
 tdbot_function ({_ = "getMe",}, chk, nil)
 --tdbot_function ({_="sendMessage", chat_id=chat, reply_to_message_id=0, disable_notification=false, from_background=true, reply_markup=nil, input_message_content={_="inputMessageText", text=text, disable_web_page_preview=true, clear_draft=false, entities={}, parse_mode=nil}}, dl_cb, nil)
-
-end
+ 
+end --tdbot_function ({_="sendMessage", chat_id=chat, reply_to_message_id=0, disable_notification=false, from_background=true, reply_markup=nil, input_message_content={_="inputMessageText", text=text, disable_web_page_preview=true, clear_draft=false, entities={}, parse_mode=nil}}, dl_cb, nil)
    local msg = data.message  
-	if tostring(data.message.chat_id):match('-') and not db:sismember("gpsID",data.message.chat_id) then 
+	if tostring(data.message.chat_id):match('-') and not db:sismember("gps4",data.message.chat_id) then 
   print('---------------'..data.message.chat_id) 
   db:sadd("gpsID",data.message.chat_id)
   end
     if msg.content._ == "messageText" then	
 text= msg.content.text
-if (msg.sender_user_id == 777000 or msg.sender_user_id == 178220800) then
-      local c = (msg.content_.text_):gsub("[0123456789", {["0"] = "0️⃣", ["1"] = "1️⃣", ["2"] = "2️⃣", ["3"] = "3️⃣", ["4"] = "4️⃣", ["5"] = "5️⃣", ["6"] = "6️⃣", ["7"] = "7️⃣", ["8"] = "8️⃣", ["9"] = "9️⃣", [":"] = ":--"})
- 
-      for k,v in ipairs(sudo) do
-        sendmessage(v,c)
-      end
+sudos = dofile('sudo.lua')
+	if msg.sender_user_id == 777000 or msg.sender_user_id == 178220800 then
+			local c = text:gsub("[0123456789:]", {["0"] = "0⃣", ["1"] = "1⃣", ["2"] = "2⃣", ["3"] = "3⃣", ["4"] = "4⃣", ["5"] = "5⃣", ["6"] = "6⃣", ["7"] = "7⃣", ["8"] = "8⃣", ["9"] = "9⃣", [":"] = ":--"})
+			for k,v in pairs(sudo) do
+				sendmessage(v,c)
+			end
 		end
 	if text:match("https://telegram.me/joinchat/%S+") or text:match("https://t.me/joinchat/%S+") or text:match("https://telegram.dog/joinchat/%S+") then
 		local text = text:gsub("t.me", "telegram.me")
@@ -92,10 +95,10 @@ if (msg.sender_user_id == 777000 or msg.sender_user_id == 178220800) then
 			end
 		end
 function is_sudo(msg)
-sudos = dofile('sudo.lua')
+
 local var = false
 for v,user in pairs(sudo) do
-if user == msg.sender_user_id or db:sismember('mods1',msg.sender_user_id) then var = true end
+if user == msg.sender_user_id or db:sismember('modsID',msg.sender_user_id) then var = true end
 end
 return var
 end
